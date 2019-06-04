@@ -70,3 +70,4 @@ _old/
 
 # visual studio
 .vscode/
+.DS_Store
