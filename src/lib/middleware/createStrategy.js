@@ -1,5 +1,5 @@
 // @flow
-import {ORDER_REQUESTED, ORDER_CANCEL} from '../constants'
+import {ORDER_REQUESTED, ORDER_CANCEL} from '../../constants'
 
 /**
  * The strategy middleware supplies the strategy with context and action. The context is a plain

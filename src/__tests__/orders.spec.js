@@ -1,11 +1,7 @@
+/* eslint-disable header/header */
 import Decimal from 'decimal.js'
-import {
-  createOrderCreator,
-  createOrder
-} from '../lib/util/orders'
-import {
-  createMockStore
-} from './util/createMockStore'
+import {createOrderCreator, createOrder} from '../lib/util/orders'
+import {createMockStore} from './util/createMockStore'
 
 let calculateCommission: Function
 let store
@@ -15,14 +11,14 @@ beforeEach(() => {
   store = createMockStore()
 })
 
-test('createOrderCreator returns correct function', () => {
+it('createOrderCreator returns correct function', () => {
   const actual = typeof createOrderCreator(store)(calculateCommission)
   const expected = 'function'
 
   expect(actual).toBe(expected)
 })
 
-test('createOrder throws on missing timestamp', () => {
+it('createOrder throws on missing timestamp', () => {
   expect(() => createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     price: 100,
@@ -30,7 +26,7 @@ test('createOrder throws on missing timestamp', () => {
   })).toThrow()
 })
 
-test('createOrder throws on missing identifier', () => {
+it('createOrder throws on missing identifier', () => {
   expect(() => createOrder(store)(calculateCommission)({
     timestamp: 100,
     price: 100,
@@ -38,7 +34,7 @@ test('createOrder throws on missing identifier', () => {
   })).toThrow()
 })
 
-test('createOrder throws on missing quantity', () => {
+it('createOrder throws on missing quantity', () => {
   expect(() => createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     timestamp: 100,
@@ -46,7 +42,7 @@ test('createOrder throws on missing quantity', () => {
   })).toThrow()
 })
 
-test('createOrder throws on missing price', () => {
+it('createOrder throws on missing price', () => {
   expect(() => createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     timestamp: 100,
@@ -54,7 +50,7 @@ test('createOrder throws on missing price', () => {
   })).toThrow()
 })
 
-test('createOrder does not support percentage orders', () => {
+it('createOrder does not support percentage orders', () => {
   expect(() => createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     timestamp: 100,
@@ -63,7 +59,7 @@ test('createOrder does not support percentage orders', () => {
   })).toThrow()
 })
 
-test('createOrder does not support trailing stop loss orders', () => {
+it('createOrder does not support trailing stop loss orders', () => {
   expect(() => createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     timestamp: 100,
@@ -73,7 +69,7 @@ test('createOrder does not support trailing stop loss orders', () => {
   })).toThrow()
 })
 
-test('createOrder does not support fixed price stop loss orders', () => {
+it('createOrder does not support fixed price stop loss orders', () => {
   expect(() => createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     timestamp: 100,
@@ -83,7 +79,7 @@ test('createOrder does not support fixed price stop loss orders', () => {
   })).toThrow()
 })
 
-test('createOrder throws if both quantity and percent is specified', () => {
+it('createOrder throws if both quantity and percent is specified', () => {
   expect(() => createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     timestamp: 100,
@@ -92,7 +88,7 @@ test('createOrder throws if both quantity and percent is specified', () => {
   })).toThrow()
 })
 
-test('createOrder returns a proper order', () => {
+it('createOrder returns a proper order', () => {
   const actual = createOrder(store)(calculateCommission)({
     identifier: 'GOOG',
     timestamp: 100,

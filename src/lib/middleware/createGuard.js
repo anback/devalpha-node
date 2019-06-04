@@ -4,7 +4,7 @@ import Decimal from 'decimal.js'
 import {
   ORDER_CREATED,
   ORDER_REJECTED
-} from '../constants'
+} from '../../constants'
 
 /**
  * The guard middleware has the capability to alter orders or even prevent them from being

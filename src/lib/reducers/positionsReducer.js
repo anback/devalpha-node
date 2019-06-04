@@ -4,7 +4,7 @@ import Decimal from 'decimal.js'
 import {
   INITIALIZED,
   ORDER_FILLED
-} from '../constants'
+} from '../../constants'
 
 const initialState = {
   instruments: {},

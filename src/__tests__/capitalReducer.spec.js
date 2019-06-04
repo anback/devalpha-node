@@ -1,4 +1,4 @@
-// @flow
+/* eslint-disable header/header */
 import Decimal from 'decimal.js'
 import { capitalReducer as reducer } from '../lib/reducers/capitalReducer'
 import {
@@ -6,9 +6,9 @@ import {
   ORDER_PLACED,
   ORDER_FILLED,
   ORDER_CANCELLED
-} from '../lib/constants'
+} from '../constants'
 
-test('return the initial state', () => {
+it('return the initial state', () => {
   const actual = reducer(undefined, { type: 'whatever', payload: { timestamp: 0 } })
   const expected = {
     cash: new Decimal(0),
@@ -19,7 +19,7 @@ test('return the initial state', () => {
   expect(actual).toEqual(expected)
 })
 
-test(`set initial values on ${INITIALIZED}`, () => {
+it(`set initial values on ${INITIALIZED}`, () => {
   const action = {
     type: INITIALIZED,
     payload: {
@@ -46,7 +46,7 @@ test(`set initial values on ${INITIALIZED}`, () => {
   expect(actual).toEqual(expected)
 })
 
-test(`set start capital on ${INITIALIZED}`, () => {
+it(`set start capital on ${INITIALIZED}`, () => {
   const action = {
     type: INITIALIZED,
     payload: {
@@ -72,7 +72,7 @@ test(`set start capital on ${INITIALIZED}`, () => {
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_PLACED} of a sell-side order correctly edits reservedCash`, () => {
+it(`${ORDER_PLACED} of a sell-side order correctly edits reservedCash`, () => {
   const order = {
     id: '1',
     identifier: 'MSFT',
@@ -94,7 +94,7 @@ test(`${ORDER_PLACED} of a sell-side order correctly edits reservedCash`, () => 
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_PLACED} of a buy-side order correctly edits cash, commission and reservedCash`, () => {
+it(`${ORDER_PLACED} of a buy-side order correctly edits cash, commission and reservedCash`, () => {
   const order = {
     id: '0',
     identifier: 'MSFT',
@@ -116,7 +116,7 @@ test(`${ORDER_PLACED} of a buy-side order correctly edits cash, commission and r
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_CANCELLED} of a sell-side order does not modify anything`, () => {
+it(`${ORDER_CANCELLED} of a sell-side order does not modify anything`, () => {
   const order = {
     id: '1',
     identifier: 'MSFT',
@@ -133,7 +133,7 @@ test(`${ORDER_CANCELLED} of a sell-side order does not modify anything`, () => {
   expect(actual).toEqual(expected)
 })
 
-test(
+it(
   `${ORDER_CANCELLED} of a buy-side order correctly reverts cash and reservedCash,
   also doesn't change commission or total`,
   () => {
@@ -163,7 +163,7 @@ test(
   }
 )
 
-test(`${ORDER_FILLED}, sell-side, should increase cash and commission, and decrease reservedCash`, () => {
+it(`${ORDER_FILLED}, sell-side, should increase cash and commission, and decrease reservedCash`, () => {
   const placedOrder = {
     id: '0',
     identifier: 'MSFT',
@@ -192,7 +192,7 @@ test(`${ORDER_FILLED}, sell-side, should increase cash and commission, and decre
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, buy-side, should increase commission and decrease reservedCash`, () => {
+it(`${ORDER_FILLED}, buy-side, should increase commission and decrease reservedCash`, () => {
   const placedOrder = {
     id: '0',
     identifier: 'MSFT',
@@ -221,7 +221,7 @@ test(`${ORDER_FILLED}, buy-side, should increase commission and decrease reserve
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, buy-side, partial fill, should increase commission and decrease reservedCash`, () => {
+it(`${ORDER_FILLED}, buy-side, partial fill, should increase commission and decrease reservedCash`, () => {
   const placedOrder = {
     id: '0',
     identifier: 'MSFT',
@@ -254,7 +254,7 @@ test(`${ORDER_FILLED}, buy-side, partial fill, should increase commission and de
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, sell-side, partial fill, increase cash and commission, and decrease reservedCash`, () => {
+it(`${ORDER_FILLED}, sell-side, partial fill, increase cash and commission, and decrease reservedCash`, () => {
   const placedOrder = {
     id: '0',
     identifier: 'MSFT',
@@ -287,7 +287,7 @@ test(`${ORDER_FILLED}, sell-side, partial fill, increase cash and commission, an
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, buy-side, better price, should increase commission and decrease reservedCash`, () => {
+it(`${ORDER_FILLED}, buy-side, better price, should increase commission and decrease reservedCash`, () => {
   const placedOrder = {
     id: '0',
     identifier: 'MSFT',
@@ -321,7 +321,7 @@ test(`${ORDER_FILLED}, buy-side, better price, should increase commission and de
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, sell-side, better price, increase cash and commission, and decrease reservedCash`, () => {
+it(`${ORDER_FILLED}, sell-side, better price, increase cash and commission, and decrease reservedCash`, () => {
   const placedOrder = {
     id: '0',
     identifier: 'MSFT',

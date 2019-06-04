@@ -1,46 +1,33 @@
-import * as _ from "highland"
-import * as EventSource from "eventsource"
-import {
-  devalpha,
-  createTrader,
-  ORDER_PLACED,
-  ORDER_FILLED,
-  ORDER_FAILED,
-  ORDER_CANCELLED,
-  INITIALIZED,
-  FINISHED,
-  DASHBOARD_EVENTS,
-  DASHBOARD_FINISHED,
-  SOCKET_PORT
-} from "../lib"
-import { createMockClient } from "./util/createMockClient"
+// @flow
+import _ from 'highland'
+import EventSource from 'eventsource'
+import {devalpha, createTrader, ORDER_PLACED, ORDER_FILLED, ORDER_FAILED, ORDER_CANCELLED, INITIALIZED, FINISHED, DASHBOARD_EVENTS, DASHBOARD_FINISHED, SOCKET_PORT} from '../'
+import { createMockClient } from './util/createMockClient'
 
-const t = { context: {} }
-
-test("backtest event order", done => {
+it('backtest event order', done => {
   const executions = []
   const strategy = ({ order }, action) => {
     switch (action.type) {
-      case "example":
-        executions.push("a")
+      case 'example':
+        executions.push('a')
         order({
-          identifier: "GOOG",
+          identifier: 'GOOG',
           price: 100,
           quantity: 50
         })
-        executions.push("b")
+        executions.push('b')
         order({
-          identifier: "MSFT",
+          identifier: 'MSFT',
           price: 100,
           quantity: 30
         })
-        executions.push("c")
+        executions.push('c')
         break
       case ORDER_PLACED:
-        executions.push("d")
+        executions.push('d')
         break
       case ORDER_FILLED:
-        executions.push("e")
+        executions.push('e')
         break
       default:
         break
@@ -52,11 +39,11 @@ test("backtest event order", done => {
       feeds: {
         example: [
           {
-            value: "event 1",
+            value: 'event 1',
             timestamp: 100
           },
           {
-            value: "event 2",
+            value: 'event 2',
             timestamp: 200
           }
         ]
@@ -71,37 +58,37 @@ test("backtest event order", done => {
   ).resume()
 
   setTimeout(() => {
-    const expected = "abcdedeabcdede"
-    const actual = executions.join("")
+    const expected = 'abcdedeabcdede'
+    const actual = executions.join('')
     expect(actual).toBe(expected)
     done()
   }, 100)
 })
 
-test("live trading event order", done => {
+it('live trading event order', done => {
   const executions = []
   const strategy = ({ order }, action) => {
     switch (action.type) {
-      case "example":
-        executions.push("a")
+      case 'example':
+        executions.push('a')
         order({
-          identifier: "GOOG",
+          identifier: 'GOOG',
           price: 100,
           quantity: 50
         })
-        executions.push("b")
+        executions.push('b')
         order({
-          identifier: "MSFT",
+          identifier: 'MSFT',
           price: 100,
           quantity: 50
         })
-        executions.push("c")
+        executions.push('c')
         break
       case ORDER_PLACED:
-        executions.push("d")
+        executions.push('d')
         break
       case ORDER_FILLED:
-        executions.push("e")
+        executions.push('e')
         break
       default:
         break
@@ -113,10 +100,10 @@ test("live trading event order", done => {
       feeds: {
         example: _((push, next) => {
           setTimeout(() => {
-            push(null, { value: "event 1", timestamp: 100 })
+            push(null, { value: 'event 1', timestamp: 100 })
           }, 0)
           setTimeout(() => {
-            push(null, { value: "event 2", timestamp: 101 })
+            push(null, { value: 'event 2', timestamp: 101 })
           }, 0)
         })
       },
@@ -132,16 +119,16 @@ test("live trading event order", done => {
   ).resume()
 
   setTimeout(() => {
-    const expected = "abcabcddddeeee"
-    const actual = executions.join("")
+    const expected = 'abcabcddddeeee'
+    const actual = executions.join('')
     expect(actual).toBe(expected)
     done()
   }, 1000)
 })
 
-test("state() returns an object", done => {
+it('state() returns an object', done => {
   const strategy = ({ state }, action) => {
-    expect(typeof state()).toBe("object")
+    expect(typeof state()).toBe('object')
     done()
   }
 
@@ -153,12 +140,12 @@ test("state() returns an object", done => {
   ).resume()
 })
 
-test("failing orders are dispatched", done => {
+it('failing orders are dispatched', done => {
   const strategy = ({ order }, action) => {
     switch (action.type) {
-      case "example":
+      case 'example':
         order({
-          identifier: "GOOG",
+          identifier: 'GOOG',
           price: 100,
           quantity: 50
         })
@@ -176,7 +163,7 @@ test("failing orders are dispatched", done => {
       feeds: {
         example: _((push, next) => {
           setTimeout(() => {
-            push(null, { value: "event 1", timestamp: 100 })
+            push(null, { value: 'event 1', timestamp: 100 })
           }, 0)
         })
       },
@@ -192,18 +179,18 @@ test("failing orders are dispatched", done => {
   ).resume()
 })
 
-test("orders are cancellable", done => {
+it('orders are cancellable', done => {
   const strategy = ({ order, cancel, state }, action) => {
     switch (action.type) {
-      case "example":
+      case 'example':
         order({
-          identifier: "GOOG",
+          identifier: 'GOOG',
           price: 100,
           quantity: 50
         })
         break
       case ORDER_PLACED:
-        cancel("1")
+        cancel('1')
         break
       case ORDER_CANCELLED:
         const actual = state().orders
@@ -221,7 +208,7 @@ test("orders are cancellable", done => {
       feeds: {
         example: _((push, next) => {
           setTimeout(() => {
-            push(null, { value: "event 1", timestamp: 100 })
+            push(null, { value: 'event 1', timestamp: 100 })
           }, 0)
         })
       },
@@ -237,11 +224,11 @@ test("orders are cancellable", done => {
   ).resume()
 })
 
-test("should not be able to cancel unknown orders", done => {
+it('should not be able to cancel unknown orders', done => {
   const strategy = ({ cancel }, action) => {
     switch (action.type) {
-      case "example":
-        cancel("1")
+      case 'example':
+        cancel('1')
         break
       case ORDER_FAILED:
         done()
@@ -256,7 +243,7 @@ test("should not be able to cancel unknown orders", done => {
       feeds: {
         example: _((push, next) => {
           setTimeout(() => {
-            push(null, { value: "event 1", timestamp: 100 })
+            push(null, { value: 'event 1', timestamp: 100 })
           }, 0)
         })
       },
@@ -267,19 +254,19 @@ test("should not be able to cancel unknown orders", done => {
   ).resume()
 })
 
-test("throws if strategy is not a function", () => {
+it('throws if strategy is not a function', () => {
   expect(() =>
     createTrader(
       {
-        strategy: "foobar"
+        strategy: 'foobar'
       },
-      // @ts-ignore
-      "foobar"
+      // $FlowFixMe
+      'foobar'
     ).resume()
   ).toThrow()
 })
 
-test("stream returns items containing action and state during live trading", done => {
+it('stream returns items containing action and state during live trading', done => {
   const events = []
   const strat = createTrader(
     {
@@ -291,10 +278,10 @@ test("stream returns items containing action and state during live trading", don
 
   strat
     .each(({ state, action }) => {
-      expect(typeof state.capital).toBe("object")
-      expect(typeof state.orders).toBe("object")
-      expect(typeof state.positions).toBe("object")
-      expect(typeof state.timestamp).toBe("number")
+      expect(typeof state.capital).toBe('object')
+      expect(typeof state.orders).toBe('object')
+      expect(typeof state.positions).toBe('object')
+      expect(typeof state.timestamp).toBe('number')
       events.push(action.type)
     })
     .done(() => {
@@ -303,7 +290,7 @@ test("stream returns items containing action and state during live trading", don
     })
 })
 
-test("stream returns items containing action and state during backtests", done => {
+it('stream returns items containing action and state during backtests', done => {
   const events = []
   const strat = createTrader(
     {
@@ -314,10 +301,10 @@ test("stream returns items containing action and state during backtests", done =
 
   strat
     .each(({ state, action }) => {
-      expect(typeof state.capital).toBe("object")
-      expect(typeof state.orders).toBe("object")
-      expect(typeof state.positions).toBe("object")
-      expect(typeof state.timestamp).toBe("number")
+      expect(typeof state.capital).toBe('object')
+      expect(typeof state.orders).toBe('object')
+      expect(typeof state.positions).toBe('object')
+      expect(typeof state.timestamp).toBe('number')
       events.push(action.type)
     })
     .done(() => {
@@ -326,7 +313,7 @@ test("stream returns items containing action and state during backtests", done =
     })
 })
 
-test("errors can be extracted from the stream", done => {
+it('errors can be extracted from the stream', done => {
   const strat = createTrader(
     {
       feeds: {
@@ -334,20 +321,20 @@ test("errors can be extracted from the stream", done => {
       }
     },
     () => {
-      throw new Error("strat")
+      throw new Error('strat')
     }
   )
 
   strat
     .errors(err => {
-      expect(err.message).toBe("strat")
+      expect(err.message).toBe('strat')
     })
     .done(() => {
       done()
     })
 })
 
-test("errors can be extracted from merged streams", done => {
+it('errors can be extracted from merged streams', done => {
   const strat1 = createTrader(
     {
       feeds: {
@@ -355,7 +342,7 @@ test("errors can be extracted from merged streams", done => {
       }
     },
     () => {
-      throw new Error("strat1")
+      throw new Error('strat1')
     }
   )
 
@@ -366,7 +353,7 @@ test("errors can be extracted from merged streams", done => {
       }
     },
     () => {
-      throw new Error("strat2")
+      throw new Error('strat2')
     }
   )
 
@@ -376,13 +363,13 @@ test("errors can be extracted from merged streams", done => {
       errors.push(err)
     })
     .done(() => {
-      expect(errors[0].message).toBe("strat1")
-      expect(errors[1].message).toBe("strat2")
+      expect(errors[0].message).toBe('strat1')
+      expect(errors[1].message).toBe('strat2')
       done()
     })
 })
 
-test("stream consumers recieve all events in the right order", done => {
+it('stream consumers recieve all events in the right order', done => {
   const events = []
   const strat = createTrader(
     {
@@ -391,21 +378,21 @@ test("stream consumers recieve all events in the right order", done => {
       }
     },
     (context, action) => {
-      events.push("a")
+      events.push('a')
     }
   )
 
   strat
     .each(() => {
-      events.push("b")
+      events.push('b')
     })
     .done(() => {
-      expect(events.join("")).toEqual("abababab")
+      expect(events.join('')).toEqual('abababab')
       done()
     })
 })
 
-test("stream consumers can apply backpressure", done => {
+it('stream consumers can apply backpressure', done => {
   const events = []
   const strat = createTrader(
     {
@@ -414,26 +401,26 @@ test("stream consumers can apply backpressure", done => {
       }
     },
     () => {
-      events.push("a")
+      events.push('a')
     }
   )
 
   const fork1 = strat.fork().map(item => {
     // eslint-disable-next-line no-empty
     for (let i = 0; i < 5000000; i += 1) {}
-    events.push("b")
+    events.push('b')
     return item
   })
 
   const fork2 = strat.fork().map(item => {
     // eslint-disable-next-line no-empty
     for (let i = 0; i < 100; i += 1) {}
-    events.push("c")
+    events.push('c')
     return item
   })
 
   strat.fork().done(() => {
-    expect(events.join("")).toEqual("abcabcabcabc")
+    expect(events.join('')).toEqual('abcabcabcabc')
     done()
   })
 
@@ -441,14 +428,14 @@ test("stream consumers can apply backpressure", done => {
   fork2.resume()
 })
 
-test("dashboard works as expected", done => {
+it('dashboard works as expected', done => {
   let clientEvents = []
   const serverEvents = []
   let runTime = -1
 
-  const trader = createTrader(
+  createTrader(
     {
-      project: "example",
+      project: 'example',
       feeds: {
         events: [{ timestamp: 0 }, { timestamp: 1 }]
       },
@@ -457,7 +444,7 @@ test("dashboard works as expected", done => {
       }
     },
     () => {
-      serverEvents.push("a")
+      serverEvents.push('a')
     }
   ).resume()
 
@@ -483,16 +470,17 @@ test("dashboard works as expected", done => {
   expect(clientEvents.length).toBe(0)
 })
 
-test("calling devalpha logs to console", done => {
+it('calling devalpha logs to console', done => {
   const actions = []
   const strategy = ({ order }, action) => {}
+  // $FlowFixMe
   console.error = jest.fn()
   devalpha(
     {
       feeds: {
         example: [
           {
-            value: "event 1",
+            value: 'event 1',
             timestamp: 100
           }
         ]
@@ -504,7 +492,7 @@ test("calling devalpha logs to console", done => {
   })
 
   setTimeout(() => {
-    expect((<jest.Mock>console.error).mock.calls.length).toBe(1)
+    expect(console.error.mock.calls.length).toBe(1)
     expect(actions.length).toBe(3)
     done()
   }, 100)

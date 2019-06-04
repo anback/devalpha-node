@@ -5,7 +5,7 @@ import {
   ORDER_FILLED,
   ORDER_CANCELLED,
   INITIALIZED
-} from '../constants'
+} from '../../constants'
 
 const initialState = {}
 

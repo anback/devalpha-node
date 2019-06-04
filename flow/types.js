@@ -5,7 +5,7 @@ import type Highland from 'highland'
 
 type TimestampState = number
 
-interface IBar {
+type IBar = {
   timestamp: number,
   identifier: string,
   open: number | Decimal,
@@ -14,11 +14,7 @@ interface IBar {
   close: number | Decimal
 }
 
-type OrdersState = {
-  [key: string]: ExecutedOrder
-}
-
-interface Position {
+type Position = {
   quantity: Decimal,
   value: Decimal,
   price: Decimal
@@ -38,27 +34,75 @@ type CapitalState = {
   total: Decimal
 }
 
-interface Feeds<R> {
+type Feeds<R> = {
   [key: string]: Highland.Stream<R>
 }
 
-interface FeedItem {
+type FeedItem = {
   timestamp: number,
   [key: string]: any
 }
 
-interface StreamAction {
+type StreamAction = {
   type: string,
   payload: FeedItem
 }
 
-interface GuardOptions {
+type GuardOptions = {
   shorting?: boolean,
   margin?: boolean,
   restricted?: string[]
 }
 
-interface DevAlphaOptions {
+type Store = {
+  dispatch: Function,
+  getState: Function,
+  setState: Function
+}
+
+type Order = {
+  identifier: string
+}
+
+type LimitOrder = Order & { price: number }
+
+type QuantityOrder = Order & { quantity: number }
+type PercentageOrder = Order & { percent: number }
+
+type StopOrder = Order & { trigger: number }
+type TrailingOrder = Order & { threshold: number }
+
+type AutomatedOrder = StopOrder | TrailingOrder
+type SizedOrder = PercentageOrder | QuantityOrder
+
+type RequestedOrder = (
+  (LimitOrder & SizedOrder) |
+  (LimitOrder & SizedOrder & AutomatedOrder)
+)
+
+type Middleware = (store: Store) => (next: Function) => (action: StreamAction) => void
+
+type Consumer = (err: Error, item: StreamAction | Highland.Nil, push: Function, next: Function) => void
+
+type CreatedOrder = Order & {
+  commission: Decimal,
+  quantity: Decimal,
+  price: Decimal,
+  timestamp: number
+}
+
+type ExecutedOrder = CreatedOrder & {id: string}
+
+type OrdersState = {[key: string]: ExecutedOrder}
+
+type RootState = {
+  capital: CapitalState,
+  orders: OrdersState,
+  positions: PositionsState,
+  timestamp: TimestampState
+}
+
+type DevAlphaOptions = {
   backtesting: boolean,
   client: any,
   project: string,
@@ -78,58 +122,10 @@ interface DevAlphaOptions {
   }
 }
 
-interface Store {
-  dispatch: Function,
-  getState: Function,
-  setState: Function
-}
-
-interface RootState {
-  capital: CapitalState,
-  orders: OrdersState,
-  positions: PositionsState,
-  timestamp: TimestampState
-}
-
-interface Order {
-  identifier: string
-}
-
-interface LimitOrder extends Order { price: number }
-
-interface QuantityOrder extends Order { quantity: number }
-interface PercentageOrder extends Order { percent: number }
-
-interface StopOrder extends Order { trigger: number }
-interface TrailingOrder extends Order { threshold: number }
-
-type AutomatedOrder = StopOrder | TrailingOrder
-type SizedOrder = PercentageOrder | QuantityOrder
-
-type RequestedOrder = (
-  (LimitOrder & SizedOrder) |
-  (LimitOrder & SizedOrder & AutomatedOrder)
-)
-
-interface Context {
+type Context = {
   state: () => RootState,
   order: (order: RequestedOrder) => void,
   cancel: (id: string) => StreamAction,
-}
-
-type Middleware = (store: Store) => (next: Function) => (action: StreamAction) => void
-
-type Consumer = (err: Error, item: StreamAction | Highland.Nil, push: Function, next: Function) => void
-
-interface CreatedOrder extends Order {
-  commission: Decimal,
-  quantity: Decimal,
-  price: Decimal,
-  timestamp: number
-}
-
-interface ExecutedOrder extends CreatedOrder {
-  id: string
 }
 
 type Strategy = (context: Context, action: StreamAction) => void

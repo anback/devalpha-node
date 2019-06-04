@@ -1,11 +1,7 @@
-import * as _ from 'highland'
-import Decimal from 'decimal.js'
-import {
-  createConsumer
-} from '../lib/util/consumers'
-import {
-  createMockStore
-} from './util/createMockStore'
+// @flow
+import _ from 'highland'
+import {createConsumer} from '../lib/util/consumers'
+import {createMockStore} from './util/createMockStore'
 
 let store
 
@@ -13,7 +9,7 @@ beforeEach(() => {
   store = createMockStore()
 })
 
-test('createConsumer pushes errors', (done) => {
+it('createConsumer pushes errors', (done) => {
   const errors = []
   const items = []
 
@@ -35,7 +31,7 @@ test('createConsumer pushes errors', (done) => {
     })
 })
 
-test('createConsumer pushes the current item if next() is not supplied a new item', (done) => {
+it('createConsumer pushes the current item if next() is not supplied a new item', (done) => {
   const items = []
   const middleware = store => next => action => next()
 

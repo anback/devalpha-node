@@ -6,7 +6,7 @@ import {
   ORDER_PLACED,
   ORDER_FILLED,
   ORDER_CANCELLED
-} from '../constants'
+} from '../../constants'
 
 const initialState: CapitalState = {
   cash: new Decimal(0),

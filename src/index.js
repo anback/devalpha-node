@@ -1,19 +1,19 @@
 // @flow
-import * as _ from 'highland'
+import _ from 'highland'
 import type Highland from 'highland'
 import { createServer } from 'http'
 import { parse } from 'url'
 
-import { createStreamMerged, createStreamSorted } from './util/streams'
-import { createConsumerCreator } from './util/consumers'
+import { createStreamMerged, createStreamSorted } from './lib/util/streams'
+import { createConsumerCreator } from './lib/util/consumers'
 
-import { rootReducer } from './reducers'
+import { rootReducer } from './lib/reducers'
 import {
   createGuard,
   createStrategy,
   createBrokerRealtime,
   createBrokerBacktest
-} from './middleware'
+} from './lib/middleware'
 
 import {
   INITIALIZED,

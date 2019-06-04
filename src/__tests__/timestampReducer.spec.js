@@ -1,8 +1,8 @@
-import { INITIALIZED } from "../lib"
+// eslint-disable-next-line header/header
+import { INITIALIZED } from '../'
+import { timestampReducer as reducer } from '../lib/reducers/timestampReducer'
 
-import { timestampReducer as reducer } from "../lib/reducers/timestampReducer"
-
-test("return the initial state", () => {
+it('return the initial state', () => {
   const actual = reducer(undefined, {
     type: INITIALIZED,
     payload: {
@@ -13,9 +13,9 @@ test("return the initial state", () => {
   expect(actual).toBe(expected)
 })
 
-test("update timestamp if valid value in payload", () => {
+it('update timestamp if valid value in payload', () => {
   const actual = reducer(50, {
-    type: "FOO",
+    type: 'FOO',
     payload: {
       timestamp: 100
     }
@@ -24,10 +24,10 @@ test("update timestamp if valid value in payload", () => {
   expect(actual).toBe(expected)
 })
 
-test("state remains unchanged if missing timestamp", () => {
+it('state remains unchanged if missing timestamp', () => {
   // @ts-ignore
   const actual = reducer(50, {
-    type: "FOO",
+    type: 'FOO',
     payload: {}
   })
   const expected = 50

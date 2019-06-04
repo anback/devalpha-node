@@ -1,7 +1,7 @@
 // @flow
 import {createOrderCreator} from '../util/orders'
 
-import {ORDER_REQUESTED, ORDER_CREATED, ORDER_PLACED, ORDER_FILLED} from '../constants'
+import {ORDER_REQUESTED, ORDER_CREATED, ORDER_PLACED, ORDER_FILLED} from '../../constants'
 
 let orderIdCounter = 0
 

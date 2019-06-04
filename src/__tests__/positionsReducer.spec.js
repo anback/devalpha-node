@@ -1,15 +1,14 @@
-import Decimal from "decimal.js"
+/* eslint-disable header/header */
+import Decimal from 'decimal.js'
 import {
   positionsReducer as reducer,
   parseBar
-} from "../lib/reducers/positionsReducer"
-import { INITIALIZED, ORDER_FILLED } from "../lib/constants"
+} from '../lib/reducers/positionsReducer'
+import { INITIALIZED, ORDER_FILLED } from '../constants'
 
-const t = { context: {} }
-
-test("return the initial state", () => {
+it('return the initial state', () => {
   const actual = reducer(undefined, {
-    type: "whatever",
+    type: 'whatever',
     payload: { timestamp: 0 }
   })
   const expected = {
@@ -19,14 +18,14 @@ test("return the initial state", () => {
   expect(actual).toEqual(expected)
 })
 
-test(`set initial values on ${INITIALIZED}`, () => {
+it(`set initial values on ${INITIALIZED}`, () => {
   const action = {
     type: INITIALIZED,
     payload: {
       timestamp: 50,
       initialStates: {
         positions: {
-          instruments: { foo: "bar" },
+          instruments: { foo: 'bar' },
           total: new Decimal(10)
         }
       }
@@ -36,7 +35,7 @@ test(`set initial values on ${INITIALIZED}`, () => {
   const actual = reducer(undefined, action)
   const expected = {
     instruments: {
-      foo: "bar"
+      foo: 'bar'
     },
     total: new Decimal(10)
   }
@@ -44,10 +43,10 @@ test(`set initial values on ${INITIALIZED}`, () => {
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, new position: add position to the state`, () => {
+it(`${ORDER_FILLED}, new position: add position to the state`, () => {
   const placedOrder = {
-    id: "0",
-    identifier: "MSFT",
+    id: '0',
+    identifier: 'MSFT',
     quantity: new Decimal(50),
     price: new Decimal(110),
     commission: new Decimal(5.5)
@@ -73,10 +72,10 @@ test(`${ORDER_FILLED}, new position: add position to the state`, () => {
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, sell-side, existing position: only update quantity and value, not price`, () => {
+it(`${ORDER_FILLED}, sell-side, existing position: only update quantity and value, not price`, () => {
   const placedOrder = {
-    id: "1",
-    identifier: "MSFT",
+    id: '1',
+    identifier: 'MSFT',
     quantity: -25,
     price: 110,
     commission: 5.5
@@ -112,10 +111,10 @@ test(`${ORDER_FILLED}, sell-side, existing position: only update quantity and va
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, buy-side, existing position: correctly update price, quantity and value`, () => {
+it(`${ORDER_FILLED}, buy-side, existing position: correctly update price, quantity and value`, () => {
   const placedOrder = {
-    id: "1",
-    identifier: "MSFT",
+    id: '1',
+    identifier: 'MSFT',
     quantity: 50,
     price: 110,
     commission: 5.5,
@@ -152,10 +151,10 @@ test(`${ORDER_FILLED}, buy-side, existing position: correctly update price, quan
   expect(actual).toEqual(expected)
 })
 
-test(`${ORDER_FILLED}, sell-side, existing position: delete the position if quantity 0`, () => {
+it(`${ORDER_FILLED}, sell-side, existing position: delete the position if quantity 0`, () => {
   const placedOrder = {
-    id: "1",
-    identifier: "MSFT",
+    id: '1',
+    identifier: 'MSFT',
     quantity: -50,
     price: 110,
     commission: 5.5,
@@ -182,16 +181,16 @@ test(`${ORDER_FILLED}, sell-side, existing position: delete the position if quan
   ).toBe(undefined)
 })
 
-test(`default: correctly update price, quantity and value`, () => {
+it(`default: correctly update price, quantity and value`, () => {
   const bar = {
-    identifier: "MSFT",
+    identifier: 'MSFT',
     timestamp: 0,
     open: 90,
     high: 110,
     low: 90,
     close: 100
   }
-  const action = { type: "foobar", payload: bar }
+  const action = { type: 'foobar', payload: bar }
   const initialState = {
     instruments: {
       MSFT: {
@@ -218,16 +217,16 @@ test(`default: correctly update price, quantity and value`, () => {
   expect(actual).toEqual(expected)
 })
 
-test(`default: dont break if non-existent position`, () => {
+it(`default: dont break if non-existent position`, () => {
   const bar = {
-    identifier: "MSFT",
+    identifier: 'MSFT',
     timestamp: 0,
     open: 90,
     high: 110,
     low: 90,
     close: 100
   }
-  const action = { type: "foobar", payload: bar }
+  const action = { type: 'foobar', payload: bar }
 
   const actual = reducer(undefined, action)
   const expected = {
@@ -238,12 +237,12 @@ test(`default: dont break if non-existent position`, () => {
   expect(actual).toEqual(expected)
 })
 
-test(`parseBar should throw TypeError upon receiving an invalid argument`, () => {
+it(`parseBar should throw TypeError upon receiving an invalid argument`, () => {
   const identifier = { open: 0, high: 0, low: 0, close: 0 }
-  const open = { identifier: "a", high: 0, low: 0, close: 0 }
-  const high = { open: 0, identifier: "a", low: 0, close: 0 }
-  const low = { open: 0, high: 0, identifier: "a", close: 0 }
-  const close = { open: 0, high: 0, low: 0, identifier: "a" }
+  const open = { identifier: 'a', high: 0, low: 0, close: 0 }
+  const high = { open: 0, identifier: 'a', low: 0, close: 0 }
+  const low = { open: 0, high: 0, identifier: 'a', close: 0 }
+  const close = { open: 0, high: 0, low: 0, identifier: 'a' }
 
   expect(() => parseBar(identifier)).toThrow()
   expect(() => parseBar(open)).toThrow()

@@ -1,12 +1,13 @@
-import Decimal from "decimal.js"
-import { ORDER_CREATED, ORDER_REJECTED } from "../lib/constants"
+/* eslint-disable header/header */
+import Decimal from 'decimal.js'
+import { ORDER_CREATED, ORDER_REJECTED } from '../constants'
 
-import { createGuard as createMiddleware } from "../lib/middleware/createGuard"
-import { createMockStore } from "./util/createMockStore"
+import { createGuard as createMiddleware } from '../lib/middleware/createGuard'
+import { createMockStore } from './util/createMockStore'
 
-import { rootReducer } from "../lib/reducers"
+import { rootReducer } from '../lib/reducers'
 
-const t = { context: {} } as any
+const t = { context: {} }
 
 beforeEach(() => {
   t.context.store = {
@@ -21,9 +22,9 @@ beforeEach(() => {
   }
 })
 
-test("pass the intercepted action to the next", () => {
+it('pass the intercepted action to the next', () => {
   const { store, next } = t.context
-  const action = { type: "FOO", payload: { timestamp: 0 } }
+  const action = { type: 'FOO', payload: { timestamp: 0 } }
   const middleware = createMiddleware({})(store)(next)
 
   middleware(action)
@@ -31,10 +32,10 @@ test("pass the intercepted action to the next", () => {
   expect(next.mock.calls[0][0]).toBe(action)
 })
 
-test("reject order if placed on restricted asset", () => {
+it('reject order if placed on restricted asset', () => {
   const { store, next } = t.context
   const order = {
-    identifier: "123",
+    identifier: '123',
     price: new Decimal(100),
     quantity: new Decimal(100),
     commission: new Decimal(5),
@@ -43,7 +44,7 @@ test("reject order if placed on restricted asset", () => {
   const action = { type: ORDER_CREATED, payload: order }
 
   const middleware = createMiddleware({
-    restricted: ["123", "456"]
+    restricted: ['123', '456']
   })(store)(next)
 
   middleware(action)
@@ -57,14 +58,14 @@ test("reject order if placed on restricted asset", () => {
   expect(actual).toEqual(expected)
 })
 
-test("reject sell order if instrument not owned and shorting is disallowed", () => {
+it('reject sell order if instrument not owned and shorting is disallowed', () => {
   const next = t.context.next
 
-  const initialState = rootReducer(undefined, { type: "foobar", payload: {} })
+  const initialState = rootReducer(undefined, { type: 'foobar', payload: {} })
   const store = createMockStore(initialState)
 
   const order = {
-    identifier: "123",
+    identifier: '123',
     price: new Decimal(100),
     quantity: new Decimal(-100),
     commission: new Decimal(5),
@@ -82,10 +83,10 @@ test("reject sell order if instrument not owned and shorting is disallowed", () 
   expect(next.mock.calls[0][0].type).toBe(ORDER_REJECTED)
 })
 
-test("reject short order if instrument owned and shorting is disallowed", () => {
+it('reject short order if instrument owned and shorting is disallowed', () => {
   const next = t.context.next
 
-  const initialState = rootReducer(undefined, { type: "foobar", payload: {} })
+  const initialState = rootReducer(undefined, { type: 'foobar', payload: {} })
   const store = createMockStore(
     Object.assign(initialState, {
       positions: {
@@ -101,7 +102,7 @@ test("reject short order if instrument owned and shorting is disallowed", () => 
   )
 
   const order = {
-    identifier: "GOOG",
+    identifier: 'GOOG',
     price: new Decimal(1),
     quantity: new Decimal(-2),
     commission: new Decimal(2),
@@ -119,14 +120,14 @@ test("reject short order if instrument owned and shorting is disallowed", () => 
   expect(next.mock.calls[0][0].type).toBe(ORDER_REJECTED)
 })
 
-test("reject order if buying on margin is disallowed", () => {
+it('reject order if buying on margin is disallowed', () => {
   const next = t.context.next
 
-  const initialState = rootReducer(undefined, { type: "foobar", payload: {} })
+  const initialState = rootReducer(undefined, { type: 'foobar', payload: {} })
   const store = createMockStore(initialState)
 
   const order = {
-    identifier: "123",
+    identifier: '123',
     price: new Decimal(100),
     quantity: new Decimal(100),
     commission: new Decimal(5),
@@ -144,14 +145,14 @@ test("reject order if buying on margin is disallowed", () => {
   expect(next.mock.calls[0][0].type).toBe(ORDER_REJECTED)
 })
 
-test("allow margin order if buying on margin is allowed", () => {
+it('allow margin order if buying on margin is allowed', () => {
   const next = t.context.next
 
-  const initialState = rootReducer(undefined, { type: "foobar", payload: {} })
+  const initialState = rootReducer(undefined, { type: 'foobar', payload: {} })
   const store = createMockStore(initialState)
 
   const order = {
-    identifier: "123",
+    identifier: '123',
     price: new Decimal(100),
     quantity: new Decimal(100),
     commission: new Decimal(5),

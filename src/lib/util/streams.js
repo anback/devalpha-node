@@ -1,5 +1,5 @@
 // @flow
-import * as _ from 'highland'
+import _ from 'highland'
 
 /**
  * The createStreams function creates Highland Streams from other objects such as Arrays and Promises.
@@ -69,7 +69,7 @@ export function createStreamSorted (feeds: Feeds<FeedItem>): Highland.Stream<Str
 
   // Highland typings does not like streams of streams, so we solve it using "as any"
   const sources: Highland.Stream<Highland.Stream<StreamAction>> = _(Object.keys(streams)
-    .map(key => streams[key].map < StreamAction > ((item: FeedItem) => ({
+    .map(key => streams[key].map((item: FeedItem) => ({
       type: key,
       payload: item
     }))))

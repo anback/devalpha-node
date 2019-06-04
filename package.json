@@ -2,7 +2,7 @@
   "name": "devalpha",
   "version": "0.3.5",
   "repository": "https://github.com/fhqvst/devalpha",
-  "main": "dist/index.js",
+  "main": "dest/index.js",
   "license": "MIT",
   "dependencies": {
     "@types/highland": "^2.12.0",
@@ -13,8 +13,12 @@
     "redux": "^4.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.1",
-    "coveralls": "^3.0.2",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "7.2.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "eventsource": "^1.0.7",
     "jest": "^23.6.0",
     "eslint": "3.19.0",
@@ -32,7 +36,14 @@
     "eslint-plugin-standard": "3.0.1"
   },
   "scripts": {
-    "start": "npm run build",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "build": "./node_modules/.bin/babel ./src -d ./dest --copy-files > /dev/null"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dest/*",
+      "/src/__tests__/util"
+    ]
   }
 }

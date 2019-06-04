@@ -1,8 +1,9 @@
-import { ORDER_REQUESTED, ORDER_CANCEL } from "../lib/constants"
+/* eslint-disable header/header */
+import { ORDER_REQUESTED, ORDER_CANCEL } from '../constants'
 
-import { createStrategy as createMiddleware } from "../lib/middleware/createStrategy"
+import { createStrategy as createMiddleware } from '../lib/middleware/createStrategy'
 
-const t = { context: {} } as any
+const t = { context: {} }
 
 beforeEach(() => {
   const store = {
@@ -17,19 +18,19 @@ beforeEach(() => {
   t.context.middleware = createMiddleware(() => {})(store)(next)
 })
 
-test("pass the intercepted action to the next", () => {
+it('pass the intercepted action to the next', () => {
   const { middleware, next } = t.context
-  const action = { type: "FOO", payload: {} }
+  const action = { type: 'FOO', payload: {} }
   middleware(action)
   expect(next.mock.calls[0][0]).toBe(action)
 })
 
-test("order() should synchronously dispatch order requested", done => {
+it('order() should synchronously dispatch order requested', done => {
   const { store, next } = t.context
-  const action = { type: "FOO", payload: { timestamp: 0 } }
+  const action = { type: 'FOO', payload: { timestamp: 0 } }
   createMiddleware(({ order }) => {
     order({
-      identifier: "a",
+      identifier: 'a',
       price: 0,
       quantity: 1
     })
@@ -41,11 +42,11 @@ test("order() should synchronously dispatch order requested", done => {
   })(store)(next)(action)
 })
 
-test("cancel() should synchronously dispatch order cancel", done => {
+it('cancel() should synchronously dispatch order cancel', done => {
   const { store, next } = t.context
-  const action = { type: "FOO", payload: { timestamp: 0 } }
+  const action = { type: 'FOO', payload: { timestamp: 0 } }
   createMiddleware(({ cancel }) => {
-    cancel("1")
+    cancel('1')
 
     expect(store.dispatch.mock.calls.length).toBe(1)
     expect(store.dispatch.mock.calls[0][0].type === ORDER_CANCEL).toBe(true)

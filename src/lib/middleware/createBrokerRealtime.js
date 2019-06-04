@@ -1,7 +1,7 @@
 // @flow
 import Decimal from 'decimal.js'
 import { createOrderCreator } from '../util/orders'
-import {ORDER_REQUESTED, ORDER_CREATED, ORDER_PLACED, ORDER_FILLED, ORDER_FAILED, ORDER_CANCEL, ORDER_CANCELLED} from '../constants'
+import {ORDER_REQUESTED, ORDER_CREATED, ORDER_PLACED, ORDER_FILLED, ORDER_FAILED, ORDER_CANCEL, ORDER_CANCELLED} from '../../constants'
 
 /**
  * Creates a broker middleware to be used running backtests.

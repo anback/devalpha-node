@@ -1,15 +1,15 @@
+/* eslint-disable header/header */
 import { createMockStore } from './util/createMockStore'
 import {
   ORDER_REQUESTED,
   ORDER_CREATED,
   ORDER_PLACED,
-  ORDER_FILLED,
-  ORDER_FAILED
-} from '../lib/constants'
+  ORDER_FILLED
+} from '../constants'
 
 import { createBrokerBacktest as createMiddleware } from '../lib/middleware/createBrokerBacktest'
 
-const t = { context: {} as any }
+const t = { context: {} }
 
 beforeEach(() => {
   const store = createMockStore({ orders: {} })
@@ -21,14 +21,14 @@ beforeEach(() => {
   t.context.middleware = createMiddleware(0)(store)(next)
 })
 
-test('pass the intercepted action to the next', () => {
+it('pass the intercepted action to the next', () => {
   const { middleware, next } = t.context
   const action = { type: 'FOO', payload: {} }
   middleware(action)
   expect(next.mock.calls[0][0]).toBe(action)
 })
 
-test('synchronously dispatch order created upon order requested', () => {
+it('synchronously dispatch order created upon order requested', () => {
   const { middleware, store } = t.context
   const action = {
     type: ORDER_REQUESTED,
@@ -45,7 +45,7 @@ test('synchronously dispatch order created upon order requested', () => {
   expect(store.dispatch.mock.calls[0][0].type).toBe(ORDER_CREATED)
 })
 
-test('can use function as calculateCommission', () => {
+it('can use function as calculateCommission', () => {
   const { store, next } = t.context
   const middleware = createMiddleware(() => 5)(store)(next)
   const action = {
@@ -63,7 +63,7 @@ test('can use function as calculateCommission', () => {
   expect(store.dispatch.mock.calls[0][0].type).toBe(ORDER_CREATED)
 })
 
-test('synchronously dispatch order placed and order filled upon order created', () => {
+it('synchronously dispatch order placed and order filled upon order created', () => {
   const { middleware, store } = t.context
   const action = {
     type: ORDER_CREATED,
