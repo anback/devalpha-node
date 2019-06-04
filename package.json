@@ -37,7 +37,8 @@
   },
   "scripts": {
     "test": "NODE_ENV=test jest",
-    "build": "./node_modules/.bin/babel ./src -d ./dest --copy-files > /dev/null"
+    "build": "./node_modules/.bin/babel ./src -d ./dest --copy-files > /dev/null",
+    "postinstall": "npm run build"
   },
   "jest": {
     "testPathIgnorePatterns": [
