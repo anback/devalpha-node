@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux'
 
 import { capitalReducer } from './capitalReducer'
@@ -13,4 +14,4 @@ export const rootReducer = combineReducers({
   positions: positionsReducer,
   orders: ordersReducer,
   timestamp: timestampReducer
-}) as any
+})

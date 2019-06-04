@@ -1,17 +1,11 @@
+// @flow
 import * as _ from 'highland'
+import type Highland from 'highland'
 import { createServer } from 'http'
 import { parse } from 'url'
 
 import { createStreamMerged, createStreamSorted } from './util/streams'
 import { createConsumerCreator } from './util/consumers'
-import {
-  DevAlphaOptions,
-  StreamAction,
-  Strategy,
-  RootState,
-  Middleware,
-  Consumer
-} from './types'
 
 import { rootReducer } from './reducers'
 import {
@@ -30,7 +24,6 @@ import {
 } from './constants'
 
 export * from './constants'
-export * from './types'
 
 /**
  * Create a trading stream, which uses supplied feeds as sources, and outputs feed events as well as
@@ -40,7 +33,7 @@ export * from './types'
  * @param {Strategy} strategy A Strategy function.
  * @returns {Stream}
  */
-export function createTrader(settings: any, strategy: Strategy) {
+export function createTrader (settings: any, strategy: Strategy) {
   const config: DevAlphaOptions = {
     project: null,
     backtesting: true,
@@ -76,7 +69,7 @@ export function createTrader(settings: any, strategy: Strategy) {
   }
 
   if (config.dashboard.active && config.project === null) {
-    throw new Error('the dashboard will not recognize your algorithm unless you set config.project to the ID of your DevAlpha project');
+    throw new Error('the dashboard will not recognize your algorithm unless you set config.project to the ID of your DevAlpha project')
   }
 
   // Store
@@ -120,7 +113,7 @@ export function createTrader(settings: any, strategy: Strategy) {
       push(null, _.nil)
     } else {
       if (config.backtesting !== false) {
-        finishedAt = (<StreamAction>item).payload.timestamp
+        finishedAt = item.payload.timestamp
       }
       push(null, item)
       next()
@@ -173,16 +166,15 @@ export function createTrader(settings: any, strategy: Strategy) {
         input.pause()
       }
     })
-    .through<StreamAction, StreamAction>(
+    .through(
       _.seq(
-        // use "as any" since functions does actually exist on _
-        (_ as any).consume(finishedConsumer),
-        (_ as any).filter(isValidAction),
-        (_ as any).consume(createConsumer(guardMiddleware)),
-        (_ as any).consume(createConsumer(brokerMiddleware)),
-        (_ as any).consume(createConsumer(reducerMiddleware)),
-        (_ as any).consume(createConsumer(strategyMiddleware))
-      ) as (x: StreamAction) => StreamAction
+        _.consume(finishedConsumer),
+        _.filter(isValidAction),
+        _.consume(createConsumer(guardMiddleware)),
+        _.consume(createConsumer(brokerMiddleware)),
+        _.consume(createConsumer(reducerMiddleware)),
+        _.consume(createConsumer(strategyMiddleware))
+      )
     )
     .doto(() => {
       // @ts-ignore
@@ -196,11 +188,10 @@ export function createTrader(settings: any, strategy: Strategy) {
     }))
 
   if (config.dashboard.active) {
-
     const socketStream = output.fork()
     output = output.fork()
 
-    let id = 0;
+    let id = 0
     const createMessage = (message: any) => {
       let response = ''
       response += `id: ${id++}\n`
@@ -224,7 +215,7 @@ export function createTrader(settings: any, strategy: Strategy) {
         return res.end()
       }
 
-      const url = parse(req.url as string)
+      const url = parse(req.url)
       if (url.pathname === `/${config.project}`) {
         headers['Content-Type'] = 'application/json'
         res.writeHead(200, headers)
@@ -233,8 +224,8 @@ export function createTrader(settings: any, strategy: Strategy) {
         }))
         res.end()
       } else if (url.pathname === `/${config.project}/backtest`) {
-        headers['Content-Type'] = 'text/event-stream',
-        headers['Connection'] = 'keep-alive',
+        headers['Content-Type'] = 'text/event-stream'
+        headers['Connection'] = 'keep-alive'
         res.writeHead(200, headers)
         startedAt = Date.now()
         socketStream
@@ -264,7 +255,6 @@ export function createTrader(settings: any, strategy: Strategy) {
     })
 
     app.listen(config.dashboard.port)
-
   }
 
   return output

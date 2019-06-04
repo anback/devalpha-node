@@ -1,8 +1,5 @@
+// @flow
 import Decimal from 'decimal.js'
-import {
-  CreatedOrder,
-  Store
-} from '../types'
 
 /**
  * A convenience function which partially applies the createOrder function with the given store and
@@ -24,9 +21,7 @@ export const createOrderCreator = (store: Store) => (calculateCommission: Functi
  * @return {CreatedOrder} A CreatedOrder.
  */
 export const createOrder = (store: Store) => (calculateCommission: Function) => (order: any): CreatedOrder => {
-  // @ts-ignore this will be used in the future for calculating percentages
-  const s = store
-  const createdOrder = {} as CreatedOrder
+  const createdOrder = {}
 
   if (typeof order.timestamp === 'undefined') {
     throw new Error('missing order timestamp')

@@ -1,9 +1,4 @@
-import {
-  StreamAction,
-  Feeds,
-  FeedItem
-} from '../types'
-
+// @flow
 import * as _ from 'highland'
 
 /**
@@ -13,12 +8,12 @@ import * as _ from 'highland'
  * @param {Feeds<FeedItem>} feeds A Feeds object mapping names to stream-like objects.
  * @return {Feeds<FeedItem>} A Feeds object mapping names to actual streams.
  */
-function createStreams(feeds: any): Feeds<FeedItem> {
-  const streams: Feeds<FeedItem> = {}
+function createStreams (feeds: any) {
+  const streams = {}
   Object.keys(feeds).forEach((key) => {
     const feed = feeds[key]
     if (_.isStream(feed)) {
-      streams[key] = <Highland.Stream<FeedItem>> feed
+      streams[key] = feed
     } else {
       streams[key] = _(feed)
     }
@@ -34,8 +29,8 @@ function createStreams(feeds: any): Feeds<FeedItem> {
  * @param  {Feeds<FeedItem>} feeds A Feeds object containing multiple streams.
  * @return {Highland.Stream<StreamAction>} A single Highland Stream made from merged streams.
  */
-export function createStreamMerged(feeds: Feeds<FeedItem>): Highland.Stream<StreamAction> {
-  const streams: Feeds<FeedItem> = createStreams(feeds)
+export function createStreamMerged (feeds: Feeds<FeedItem>): Highland.Stream<StreamAction> {
+  const streams = ((createStreams(feeds): any): Feeds<FeedItem>)
   return _(Object.keys(streams)
     .map(key => streams[key].map((item: FeedItem) => ({
       type: key,
@@ -53,9 +48,9 @@ export function createStreamMerged(feeds: Feeds<FeedItem>): Highland.Stream<Stre
  * @param  {Feeds<FeedItem>}               feeds A Feeds object containing multiple streams.
  * @return {Highland.Stream<StreamAction>}       A single Highland Stream made from sorted streams.
  */
-export function createStreamSorted(feeds: Feeds<FeedItem>): Highland.Stream<StreamAction> {
+export function createStreamSorted (feeds: Feeds<FeedItem>): Highland.Stream<StreamAction> {
   const buffer = new Map()
-  const streams: Feeds<FeedItem> = createStreams(feeds)
+  const streams = ((createStreams(feeds): any): Feeds<FeedItem>)
   const pred = (x1: any, x2: any) => {
     const t1 = x1.payload && x1.payload.timestamp
     const t2 = x2.payload && x2.payload.timestamp
@@ -74,10 +69,10 @@ export function createStreamSorted(feeds: Feeds<FeedItem>): Highland.Stream<Stre
 
   // Highland typings does not like streams of streams, so we solve it using "as any"
   const sources: Highland.Stream<Highland.Stream<StreamAction>> = _(Object.keys(streams)
-    .map(key => streams[key].map<StreamAction>((item: FeedItem) => ({
+    .map(key => streams[key].map < StreamAction > ((item: FeedItem) => ({
       type: key,
       payload: item
-    })))) as any
+    }))))
 
   return sources.collect().flatMap((srcs: Highland.Stream<StreamAction>[]) => {
     const nextValue = (src: Highland.Stream<StreamAction>, push: Function, next: Function) => {
@@ -85,7 +80,7 @@ export function createStreamSorted(feeds: Feeds<FeedItem>): Highland.Stream<Stre
         if (err) {
           push(err)
           nextValue(src, push, next)
-        } else if (x === _.nil as any) {
+        } else if (x === _.nil) {
           // push last element in buffer
           if (buffer.get(src)) {
             push(null, buffer.get(src))
@@ -131,9 +126,9 @@ export function createStreamSorted(feeds: Feeds<FeedItem>): Highland.Stream<Stre
         for (const pair of Array.from(buffer.entries())) {
           srcToPull = srcToPull === undefined || pred(pair[1], srcToPull[1]) ? pair : srcToPull
         }
-        // @ts-ignore
+        // $FlowFixMe
         nextValue(srcToPull[0], push, next)
       }
-    }) as Highland.Stream<StreamAction>
+    })
   })
 }

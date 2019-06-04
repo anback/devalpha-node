@@ -1,15 +1,5 @@
-import {
-  Store,
-  Strategy,
-  StreamAction,
-  Middleware,
-  RequestedOrder
-} from '../types'
-
-import {
-  ORDER_REQUESTED,
-  ORDER_CANCEL
-} from '../constants'
+// @flow
+import {ORDER_REQUESTED, ORDER_CANCEL} from '../constants'
 
 /**
  * The strategy middleware supplies the strategy with context and action. The context is a plain
@@ -20,7 +10,7 @@ import {
  * @param {Strategy} strategy The strategy provided by the user.
  * @return {Middleware} Middleware to be consumed by a Consumer.
  */
-export function createStrategy(strategy: Strategy): Middleware {
+export function createStrategy (strategy: Strategy): Middleware {
   return (store: Store) => (next: Function) => (action: StreamAction) => {
     strategy(
       {
@@ -44,5 +34,4 @@ export function createStrategy(strategy: Strategy): Middleware {
     )
     return next(action)
   }
-
 }

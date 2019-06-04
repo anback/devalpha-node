@@ -1,11 +1,5 @@
+// @flow
 import Decimal from 'decimal.js'
-import {
-  StreamAction,
-  Bar,
-  PositionsState,
-  // @ts-ignore TS6133
-  Position
-} from '../types'
 
 import {
   INITIALIZED,
@@ -21,8 +15,8 @@ const initialState = {
  * Tries to collect properties assembling a chart bar from an object.
  * @param {any} maybeBar A possible bar
  */
-export function parseBar(maybeBar: any) {
-  const bar: Bar = {} as Bar
+export function parseBar (maybeBar: any) {
+  const bar = {}
   if (maybeBar.identifier) {
     bar.identifier = maybeBar.identifier
   } else {
@@ -46,23 +40,24 @@ export function parseBar(maybeBar: any) {
  * @param  {StreamAction}    action An action received from the stream.
  * @return {PositionsState}           Next state.
  */
-export function positionsReducer(state: PositionsState = initialState, action: StreamAction) {
+export function positionsReducer (state: PositionsState = initialState, action: StreamAction) {
   state = {
     ...state,
     instruments: Object.assign({}, state.instruments)
   }
   switch (action.type) {
-
     case INITIALIZED: {
-      if (action.payload.initialStates.positions) {
-        const initial = action.payload.initialStates.positions
+      const payload: DevAlphaOptions = (action.payload: any)
+      if (payload.initialStates.positions) {
+        const initial = payload.initialStates.positions
         state = { ...state, ...initial }
       }
       break
     }
 
     case ORDER_FILLED: {
-      const filledOrder = action.payload.filledOrder
+      const payload = (action.payload: any)
+      const filledOrder: ExecutedOrder = payload.filledOrder
 
       const { identifier } = filledOrder
       // @ts-ignore TS2322 Decimal.sign returns number (decimal.js@10.0.0)

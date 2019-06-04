@@ -1,3 +1,4 @@
+// @flow
 import Decimal from 'decimal.js'
 import { capitalReducer as reducer } from '../lib/reducers/capitalReducer'
 import {
@@ -299,7 +300,7 @@ test(`${ORDER_FILLED}, buy-side, better price, should increase commission and de
     ...placedOrder,
     quantity: new Decimal(100),
     price: new Decimal(90),
-    commission: new Decimal(9),
+    commission: new Decimal(9)
   }
   const action = { type: ORDER_FILLED, payload: { placedOrder, filledOrder, timestamp: 0 } }
   const initialState = {
@@ -333,7 +334,7 @@ test(`${ORDER_FILLED}, sell-side, better price, increase cash and commission, an
     ...placedOrder,
     quantity: new Decimal(-100),
     price: new Decimal(110),
-    commission: new Decimal(11),
+    commission: new Decimal(11)
   }
   const action = { type: ORDER_FILLED, payload: { placedOrder, filledOrder, timestamp: 0 } }
   const initialState = {

@@ -1,11 +1,5 @@
+// @flow
 import Decimal from 'decimal.js'
-
-import {
-  ExecutedOrder,
-  StreamAction,
-  OrdersState
-} from '../types'
-
 import {
   ORDER_PLACED,
   ORDER_FILLED,
@@ -23,26 +17,28 @@ const initialState = {}
  * @param  {StreamAction}    action An action received from the stream.
  * @return {OrdersState}           Next state.
  */
-export function ordersReducer(state: OrdersState = initialState, action: StreamAction) {
+export function ordersReducer (state: OrdersState = initialState, action: StreamAction) {
   state = { ...state }
 
   switch (action.type) {
     case INITIALIZED: {
-      if (action.payload.initialStates.orders) {
-        const initial = action.payload.initialStates.orders
+      const payload: DevAlphaOptions = (action.payload: any)
+      if (payload.initialStates.orders) {
+        const initial = payload.initialStates.orders
         state = { ...state, ...initial }
       }
       break
     }
 
     case ORDER_PLACED: {
-      const order: ExecutedOrder = action.payload as ExecutedOrder
+      const order: ExecutedOrder = (action.payload: any)
       state[order.id] = order
       break
     }
 
     case ORDER_FILLED: {
-      const order: ExecutedOrder = action.payload.filledOrder as ExecutedOrder
+      const payload = (action.payload: any)
+      const order: ExecutedOrder = payload.filledOrder
 
       const storedOrder = state[order.id]
 
@@ -64,14 +60,14 @@ export function ordersReducer(state: OrdersState = initialState, action: StreamA
         state[order.id] = {
           ...storedOrder,
           quantity: newQuantity,
-          commission: newCommission,
+          commission: newCommission
         }
       }
       break
     }
 
     case ORDER_CANCELLED: {
-      const { id } = action.payload
+      const { id }: ExecutedOrder = (action.payload: any)
       delete state[id]
       break
     }

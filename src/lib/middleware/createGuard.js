@@ -1,11 +1,5 @@
+// @flow
 import Decimal from 'decimal.js'
-import {
-  Store,
-  StreamAction,
-  CreatedOrder,
-  GuardOptions,
-  Middleware
-} from '../types'
 
 import {
   ORDER_CREATED,
@@ -20,7 +14,7 @@ import {
  * @param  {Object} options A options object.
  * @return {Middleware} Middleware to be consumed by a Consumer.
  */
-export function createGuard(options: GuardOptions): Middleware {
+export function createGuard (options: GuardOptions): Middleware {
   return (store: Store) => {
     const isRestrictedAsset = (order: CreatedOrder) => {
       if (options.restricted && options.restricted.indexOf(order.identifier) > -1) {
@@ -54,7 +48,7 @@ export function createGuard(options: GuardOptions): Middleware {
     return (next: Function) => (action: StreamAction) => {
       switch (action.type) {
         case ORDER_CREATED: {
-          const order: CreatedOrder = <CreatedOrder> action.payload
+          const order = ((action.payload: any): CreatedOrder)
           if (
             isRestrictedAsset(order) ||
             isDisallowedShort(order) ||

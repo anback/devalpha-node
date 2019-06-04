@@ -1,0 +1,30 @@
+{
+    "extends": [
+      "standard-flow",
+      "standard"
+    ],
+    "parser": "babel-eslint",
+  
+    "env": {
+      "es6": true,
+      "jest": true
+    },
+  
+    "plugins": [
+      "flowtype",
+      "jest",
+      "header"
+  
+    ],
+  
+    "rules": {
+      "import/first":0,
+      "import/no-webpack-loader-syntax":0,
+      "no-new": 0,
+      "no-console": 0,
+      "no-unused-vars": 1,
+      "indent":"error",
+      "header/header": [2, "line", [" @flow"]]
+    }
+  }
+  

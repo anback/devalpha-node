@@ -1,9 +1,5 @@
+// @flow
 import * as _ from 'highland'
-import {
-  Store,
-  Middleware,
-  StreamAction
-} from '../types'
 
 /**
  * A convenience function which partially applies the createConsumer function with the given store.
@@ -38,7 +34,7 @@ export const createConsumer = (store: Store) => (middleware: Middleware) => (err
           push(null, item)
         }
         next()
-      })(<StreamAction>item)
+      })(item)
     } catch (err) {
       push(err)
       next()

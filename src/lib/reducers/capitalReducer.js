@@ -1,8 +1,5 @@
+// @flow
 import Decimal from 'decimal.js'
-import {
-  StreamAction,
-  CapitalState
-} from '../types'
 
 import {
   INITIALIZED,
@@ -26,20 +23,20 @@ const initialState: CapitalState = {
  * @param  {StreamAction}    action An action received from the stream.
  * @return {CapitalState}           Next state.
  */
-export function capitalReducer(
+export function capitalReducer (
   state: CapitalState = initialState,
   action: StreamAction): CapitalState {
-
   state = { ...state }
 
   switch (action.type) {
     case INITIALIZED: {
-      if (typeof action.payload.startCapital !== 'undefined') {
-        state.cash = new Decimal(action.payload.startCapital)
-        state.total = new Decimal(action.payload.startCapital)
+      let payload = ((action.payload: any): DevAlphaOptions)
+      if (typeof payload.startCapital !== 'undefined') {
+        state.cash = new Decimal(payload.startCapital)
+        state.total = new Decimal(payload.startCapital)
       }
-      if (action.payload.initialStates.capital) {
-        const initial = action.payload.initialStates.capital
+      if (payload.initialStates.capital) {
+        const initial = payload.initialStates.capital
 
         if (typeof initial.cash !== 'undefined') {
           state.cash = new Decimal(initial.cash)
@@ -57,7 +54,7 @@ export function capitalReducer(
       break
     }
     case ORDER_PLACED: {
-      const order = action.payload
+      const order = ((action.payload: any): CreatedOrder)
       // @ts-ignore TS2322 Decimal.sign returns number (decimal.js@10.0.0)
       const direction: number = Decimal.sign(order.quantity)
       let cash
@@ -89,8 +86,9 @@ export function capitalReducer(
     }
 
     case ORDER_FILLED: {
-      const placedOrder = action.payload.placedOrder
-      const filledOrder = action.payload.filledOrder
+      let payload = (action.payload: any)
+      const placedOrder = (payload.placedOrder: CreatedOrder)
+      const filledOrder = (payload.filledOrder: ExecutedOrder)
 
       // @ts-ignore TS2322 Decimal.sign returns number (decimal.js@10.0.0)
       const direction: number = Decimal.sign(filledOrder.quantity)
@@ -144,7 +142,7 @@ export function capitalReducer(
     }
 
     case ORDER_CANCELLED: {
-      const cancelledOrder = action.payload
+      const cancelledOrder: ExecutedOrder = (action.payload: any)
       // @ts-ignore TS2322 Decimal.sign returns number (decimal.js@10.0.0)
       const direction: number = Decimal.sign(cancelledOrder.quantity)
 

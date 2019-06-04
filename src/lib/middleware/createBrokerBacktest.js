@@ -1,18 +1,7 @@
-import {
-  createOrderCreator
-} from '../util/orders'
-import {
-  Store,
-  StreamAction,
-  Middleware,
-  CreatedOrder
-} from '../types'
-import {
-  ORDER_REQUESTED,
-  ORDER_CREATED,
-  ORDER_PLACED,
-  ORDER_FILLED
-} from '../constants'
+// @flow
+import {createOrderCreator} from '../util/orders'
+
+import {ORDER_REQUESTED, ORDER_CREATED, ORDER_PLACED, ORDER_FILLED} from '../constants'
 
 let orderIdCounter = 0
 
@@ -26,9 +15,8 @@ let orderIdCounter = 0
  * @param  {number|function} commission Calculate the commission based on price and quantity
  * @return {Middleware} Middleware to be consumed by a Consumer.
  */
-export function createBrokerBacktest(commission: number | Function): Middleware {
+export function createBrokerBacktest (commission: number | Function): Middleware {
   return (store: Store) => {
-
     const calculateCommission = typeof commission === 'function' ? commission : () => commission
     const createOrder = createOrderCreator(store)(calculateCommission)
 

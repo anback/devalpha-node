@@ -1,21 +1,7 @@
+// @flow
 import Decimal from 'decimal.js'
 import { createOrderCreator } from '../util/orders'
-import {
-  Store,
-  StreamAction,
-  Middleware,
-  CreatedOrder,
-  ExecutedOrder
-} from '../types'
-import {
-  ORDER_REQUESTED,
-  ORDER_CREATED,
-  ORDER_PLACED,
-  ORDER_FILLED,
-  ORDER_FAILED,
-  ORDER_CANCEL,
-  ORDER_CANCELLED
-} from '../constants'
+import {ORDER_REQUESTED, ORDER_CREATED, ORDER_PLACED, ORDER_FILLED, ORDER_FAILED, ORDER_CANCEL, ORDER_CANCELLED} from '../constants'
 
 /**
  * Creates a broker middleware to be used running backtests.
@@ -28,9 +14,8 @@ import {
  * requests to an _actual_ broker.
  * @return {Middleware} Middleware to be consumed by a Consumer.
  */
-export function createBrokerRealtime(createClient: Function): Middleware {
+export function createBrokerRealtime (createClient: Function): Middleware {
   return (store: Store) => {
-
     const client = createClient({
       // @todo Don't require the client to provide expectedPrice/Quantity/Commission
       onFill: (order: ExecutedOrder) => {
@@ -87,7 +72,7 @@ export function createBrokerRealtime(createClient: Function): Middleware {
           break
         }
         case ORDER_CANCEL: {
-          const id = action.payload.id
+          let {id} = ((action.payload: any): ExecutedOrder)
           if (store.getState().orders[id]) {
             client.cancelOrder({ id }).then(() => {
               const cancelledOrder = store.getState().orders[id]

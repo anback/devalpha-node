@@ -1,3 +1,4 @@
+// @flow
 export const ORDER_REQUESTED = '@@devalpha/ORDER_REQUESTED'
 export const ORDER_CREATED = '@@devalpha/ORDER_CREATED'
 export const ORDER_PLACED = '@@devalpha/ORDER_PLACED'
